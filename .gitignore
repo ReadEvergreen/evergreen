@@ -12,5 +12,6 @@
 !/log/.keep
 /tmp
 
-evergreen_development
-evergreen_test
+# Config files
+/config/database.yml
+/config/secrets.yml
