@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :resource, aliases: [:synthesis] do
     title         "resource_title"
