@@ -4,7 +4,7 @@ gem 'rails', '4.2.10'
 
 gem 'pg'
 
-gem 'devise'
+gem 'devise', '3.5.6'
 gem 'faker'
 gem 'figaro'
 gem 'jbuilder', '~> 2.0'
@@ -16,7 +16,7 @@ gem 'twitter-bootstrap-rails'
 gem 'uglifier', '>= 1.3.0'
 
 # Angular gems
-gem 'angularjs-rails'
+# gem 'angularjs-rails', '1.4.8'
 gem 'angular_rails_csrf'
 gem 'angular-rails-templates'
 
