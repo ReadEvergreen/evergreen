@@ -9,10 +9,11 @@
 #
 
 RSpec.describe Sector, type: :model do
+  subject(:sector) { Sector.create(title: "business") }
 
-  it { should have_many(:categories).with_foreign_key(:sector_id).dependent(:nullify) }
-  it { should have_many(:collections).through(:categories) }
-  it { should have_many(:resources).through(:collections) }
-  it { should have_many(:upvotes).through(:resources) }
+  it "has a unique title" do
+    duplicate_sector = sector.dup
 
+    expect(duplicate_sector).to be_invalid
+  end
 end

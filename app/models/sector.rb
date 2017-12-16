@@ -15,7 +15,7 @@ class Sector < ActiveRecord::Base
   has_many :resources, :through => :collections
   has_many :upvotes, :through => :resources
 
-  validates :title, :length => { :in => 1..50 }
+  validates :title, presence: true, uniqueness: true
 
   def category_total
     self.categories.count
@@ -30,9 +30,7 @@ class Sector < ActiveRecord::Base
   end
 
   def all_totals
-
     [self.category_total, self.collection_total, self.resource_total]
-
   end
 
   def top_three
