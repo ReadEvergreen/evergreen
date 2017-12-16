@@ -15,7 +15,7 @@ class Category < ActiveRecord::Base
   has_many :collections, :foreign_key => :category_id, :dependent => :nullify
   has_many :resources, :through => :collections
 
-  validates :title, :length => { :in => 1..50 }
+  validates :title, presence: true, uniqueness: true
 
   def collection_total
     self.collections.count

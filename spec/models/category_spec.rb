@@ -10,9 +10,11 @@
 #
 
 RSpec.describe Category, type: :model do
+  subject(:category) { Category.create(title: "Building the Team") }
 
-  it { should belong_to(:sector) }
-  it { should have_many(:collections).with_foreign_key(:category_id).dependent(:nullify) }
-  it { should have_many(:resources).through(:collections) }
+  it "has a unique title" do
+    duplicate_category = category.dup
 
+    expect(duplicate_category).to be_invalid
+  end
 end
