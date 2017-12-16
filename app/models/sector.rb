@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: sectors
+#
+#  id         :integer          not null, primary key
+#  title      :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Sector < ActiveRecord::Base
 
   has_many :categories, :foreign_key => :sector_id, :dependent => :nullify
