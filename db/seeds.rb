@@ -8,18 +8,18 @@
 
 require 'csv'
 
-SiteInfo.delete_all
-User.delete_all
-Sector.delete_all
-Category.delete_all
-Collection.delete_all
-Resource.delete_all
+# SiteInfo.delete_all
+# User.delete_all
+# Sector.delete_all
+# Category.delete_all
+# Collection.delete_all
+# Resource.delete_all
 
-MULTIPLIER = 8
+# MULTIPLIER = 8
 
-puts 'Old records destroyed'
+# puts 'Old records destroyed'
 
-SiteInfo.create(:about => '<p>Evergreen is a Bi-weekly collection of links to the best learning resources in business, collected by a group of managers, founders, and investors. We contribute resources about one topic, which are synthesized and shared in this Collection. The goal is to learn more efficiently through increased context and focus.</p>
+SiteInfo.find_or_create_by!(:about => '<p>Evergreen is a Bi-weekly collection of links to the best learning resources in business, collected by a group of managers, founders, and investors. We contribute resources about one topic, which are synthesized and shared in this Collection. The goal is to learn more efficiently through increased context and focus.</p>
 <p>Remember, these are designed to feel like short books, you’re meant to meander and spend ~3 hours on this topic this week. Save some of these links and read them throughout the week. Immerse yourself in this topic and leave the week smarter than you started it!</p>
 <p><br></p>
 <h4>Hey look <b>bold</b>, <i>italic</i>, and <u>underlined</u> text!</h4>
@@ -53,23 +53,21 @@ SiteInfo.create(:about => '<p>Evergreen is a Bi-weekly collection of links to th
 <p id="8c66" class="graf--p graf-after--p" style="color: rgba(0, 0, 0, 0.8);background-color: rgb(255, 255, 255);">Welcome to Evergreen:<span class="Apple-converted-space">&nbsp;</span><a href="https://medium.com/r/?url=http%3A%2F%2Fbit.ly%2F1xqh3cX" class="markup--anchor markup--p-anchor" rel="nofollow" style="color: inherit;">Share your email to join</a>.</p>
 <p id="9801" class="graf--p graf-after--p" style="color: rgba(0, 0, 0, 0.8);background-color: rgb(255, 255, 255);">Any improvements that you can think of, I’d love to hear about.</p>')
 
-puts 'Default site info set'
+# User.create(:email => "admin@test.com",
+#             :username => "adminTester",
+#             :password => "password",
+#             :password_confirmation => "password",
+#             :user_type => "admin")
 
-User.create(:email => "admin@test.com",
-            :username => "adminTester",
-            :password => "password",
-            :password_confirmation => "password",
-            :user_type => "admin")
+# puts 'Created test admin [:email => admin@test.com, :password => password]'
 
-puts 'Created test admin [:email => admin@test.com, :password => password]'
+# User.create(:email => "curator@test.com",
+#             :username => "curatorTester",
+#             :password => "password",
+#             :password_confirmation => "password",
+#             :user_type => "curator")
 
-User.create(:email => "curator@test.com",
-            :username => "curatorTester",
-            :password => "password",
-            :password_confirmation => "password",
-            :user_type => "curator")
-
-puts 'Created test curator [:email => curator@test.com, :password => password]'
+# puts 'Created test curator [:email => curator@test.com, :password => password]'
 
 # (2 * MULTIPLIER).times do
 #   User.create(:email => Faker::Internet.email,
@@ -81,13 +79,13 @@ puts 'Created test curator [:email => curator@test.com, :password => password]'
 
 # puts 'Created random curators'
 
-User.create(:email => "reader@test.com",
-            :username => "readerTester",
-            :password => "password",
-            :password_confirmation => "password",
-            :user_type => "reader")
+# User.create(:email => "reader@test.com",
+#             :username => "readerTester",
+#             :password => "password",
+#             :password_confirmation => "password",
+#             :user_type => "reader")
 
-puts 'Created test reader [:email => reader@test.com, :password => password]'
+# puts 'Created test reader [:email => reader@test.com, :password => password]'
 
 # (2).times do
 #   Sector.create(:title => Faker::Book.genre)
@@ -95,56 +93,71 @@ puts 'Created test reader [:email => reader@test.com, :password => password]'
 
 # puts 'Random Sectors Created'
 
-Sector.create(:title => "Business")
+sector = Sector.find_or_create_by!(title: "Business")
 
-puts 'Business Sector Created'
+CSV.foreach(Rails.root.join("db", "data", "resources.csv"), headers: true) do |resource|
+  p resource
+  category = Category.find_or_create_by!(title: resource["Category"], sector: sector)
+  collection =
+    Collection.find_or_create_by!(
+      title: resource["Collection"],
+      description: "Description here.",
+      category: category
+    )
 
-Sector.first.categories.create(:title => 'All Collections')
-
-puts 'Random Category Created'
-
-input_collections = ['Advertising',
-                     'Brand', 
-                     'Comp Advantage', 
-                     'Company Culture', 
-                     'Compensation', 
-                     'Competitive Advantage', 
-                     'Cost Leadership', 
-                     'Customer Acquisition Cost', 
-                     'Customer Development', 
-                     'Customer Lifetime Value', 
-                     'Distribution', 
-                     'Employee Onboarding', 
-                     'Employee Retention', 
-                     'Firing', 
-                     'Hiring', 
-                     'How to Start a New Job', 
-                     'Ideation', 
-                     'Internal Communication', 
-                     'Internal Communications', 
-                     'Low Cost Competitive Advantage', 
-                     'Managing Scale', 
-                     'Network Effects', 
-                     'Onboarding', 
-                     'Partnerships', 
-                     'Performance Reviews', 
-                     'Pricing', 
-                     'Product Management', 
-                     'Product-Market Fit', 
-                     'Recruiting', 
-                     'Sales', 
-                     'Scale', 
-                     'Storytelling', 
-                     'Strategy', 
-                     'Validation', 
-                     'Value Capture', 
-                     'Value Creation', 
-                     'Word of Mouth']
-
-input_collections.each do |collection|
-  Category.first.collections.create(:title => collection,
-                                    :description => Faker::Lorem.sentence(3, true, 6))
+  Resource.
+    find_or_initialize_by(url: resource["Link"]).
+    update_attributes!(
+      media_type: resource["Media Type"],
+      description: resource["Description"],
+      title: resource["Title"],
+      collection: collection,
+      approved: true,
+    )
 end
+
+# input_collections = ['Advertising',
+#                      'Brand', 
+#                      'Comp Advantage', 
+#                      'Company Culture', 
+#                      'Compensation', 
+#                      'Competitive Advantage', 
+#                      'Cost Leadership', 
+#                      'Customer Acquisition Cost', 
+#                      'Customer Development', 
+#                      'Customer Lifetime Value', 
+#                      'Distribution', 
+#                      'Employee Onboarding', 
+#                      'Employee Retention', 
+#                      'Firing', 
+#                      'Hiring', 
+#                      'How to Start a New Job', 
+#                      'Ideation', 
+#                      'Internal Communication', 
+#                      'Internal Communications', 
+#                      'Low Cost Competitive Advantage', 
+#                      'Managing Scale', 
+#                      'Network Effects', 
+#                      'Onboarding', 
+#                      'Partnerships', 
+#                      'Performance Reviews', 
+#                      'Pricing', 
+#                      'Product Management', 
+#                      'Product-Market Fit', 
+#                      'Recruiting', 
+#                      'Sales', 
+#                      'Scale', 
+#                      'Storytelling', 
+#                      'Strategy', 
+#                      'Validation', 
+#                      'Value Capture', 
+#                      'Value Creation', 
+#                      'Word of Mouth']
+
+# input_collections.each do |collection|
+#   Category.first.collections.create(:title => collection,
+#                                     :description => Faker::Lorem.sentence(3, true, 6))
+# end
 
 # Sector.all.each do |sector|
 #   (rand(MULTIPLIER / 3) + 2).times do
@@ -233,10 +246,11 @@ end
 
 # puts 'Upvotes Added'
 
-CSV.foreach("#{Rails.root}/public/files/import1.csv", :headers => true) do |row|
-  Resource.create(row.to_hash)
-end
+# CSV.foreach("#{Rails.root}/public/files/import1.csv", :headers => true) do |row|
+#   Resource.create(row.to_hash)
+# end
 
-puts 'Resources Imported'
+# puts 'Resources Imported'
 
-puts 'SEEDING COMPLETE'
+# puts 'SEEDING COMPLETE'
+
