@@ -52,9 +52,9 @@
                   Resource Description
                 </th>
 
-                <th class='pointer' ng-click="toggleSort('collection_name')">
-                  Collection
-                  <i ng-class="sortIcon('collection_name')"></i>
+                <th class='pointer' ng-click="toggleSort('collection_titles')">
+                  Collections
+                  <i ng-class="sortIcon('collection_titles')"></i>
                 </th>
 
                 <th>Remove Resource?</th>
@@ -77,9 +77,7 @@
                 </td>
                 <td>{{ resource.description }}</td>
                 <td>
-                  <a ui-sref="collection({collection_id: {{resource.collection_id}}})">
-                    {{ resource.collection_name | capitalize:true }}
-                  </a>
+                  {{ resource.collection_titles | capitalize:true }}
                 </td>
                 <td>
                   <span class='btn btn-danger btn-sm' ng-click='destroyResource(resource, resource.owner_id)'>

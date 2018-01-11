@@ -15,13 +15,13 @@
       <div class='col-sm-6 col-sm-offset-3'>
         <form>
           <div class='form-group' ng-class="errorClass('collection')">
-            <label class='control-label' for='collection_id'>Collection</label>
-            <select class='form-control' id='collection_id' ng-model="addResource.collection_id">
+            <label class='control-label' for='collection_ids'>Collections</label>
+            <select class='form-control' id='collection_ids' ng-model="addResource.collection_ids" multiple='true'>
               <option ng-repeat="collection in collections" value="{{ collection.id }}">{{ collection.title }}</option>
             </select>
 
             <span class='help-block' ng-show="errorClass('collection') === 'has-error'">
-              Collection {{ errorMessages('collection') }}
+              Collections {{ errorMessages('collection') }}
             </span>
           </div>
 

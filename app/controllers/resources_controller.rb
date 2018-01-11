@@ -5,7 +5,6 @@ class ResourcesController < ApplicationController
   before_action :require_current_user, :only => [:upvote]
 
   def index
-
     # resource index for specific user
     if params[:user_id]
       @resources = User.find(params[:user_id]).resources
@@ -23,7 +22,7 @@ class ResourcesController < ApplicationController
     if params[:collection_id]
       respond_to do |format|
         format.json { render json: @resources.to_json(
-          :include => [:owner, :collection],
+          :include => [:owner, :collections],
           :methods => [:upvote_count,
                        :upvote_ids]), :status => 200 }
       end
@@ -31,7 +30,7 @@ class ResourcesController < ApplicationController
       respond_to do |format|
         format.json { render json: @resources.to_json(
           :methods => [:owner_username,
-                       :collection_name,
+                       :collection_titles,
                        :upvote_count]), :status => 200 }
       end
     end
@@ -39,7 +38,6 @@ class ResourcesController < ApplicationController
   end
 
   def show
-
     @resource = Resource.find_by_id(params[:id])
     respond_to do |format|
       format.json { render json: @resource.to_json, :status => 200 }
@@ -48,19 +46,17 @@ class ResourcesController < ApplicationController
   end
 
   def search
-
     @resources = Resource.all.search(params[:search])
     respond_to do |format|
       format.json { render json: @resources.to_json(
         :methods => [:owner_username,
-                     :collection_name,
+                     :collection_titles,
                      :upvote_count]), :status => 200 }
     end
 
   end
 
   def create
-
     @resource = Resource.new(resource_params)
 
     if @resource.save
@@ -76,13 +72,12 @@ class ResourcesController < ApplicationController
   end
 
   def upvote
-
     @resource = Resource.find(params[:id])
 
     if @resource.upvotes.create(user_id: current_user.id)
       respond_to do |format|
         format.json { render json: @resource.to_json(
-          :include => [:owner, :collection],
+          :include => [:owner, :collections],
           :methods => [:upvote_count,
                        :upvote_ids]), :status => 200 }
       end
@@ -96,7 +91,6 @@ class ResourcesController < ApplicationController
   end
 
   def update
-
     @resource = Resource.find_by_id(params[:id])
 
     if @resource.update(resource_params)
@@ -112,7 +106,6 @@ class ResourcesController < ApplicationController
   end
 
   def destroy
-
     @resource = Resource.find_by_id(params[:id])
 
     if @resource && @resource.destroy
@@ -130,11 +123,10 @@ class ResourcesController < ApplicationController
   private
 
   def resource_params
-    params.require(:resource).permit(:title, :description, :url, :owner_id, :collection_id, :media_type, :approved)
+    params.require(:resource).permit(:title, :description, :url, :owner_id, :collection_ids, :media_type, :approved)
   end
 
   def require_owner
-
     if params[:user_id]
       user = User.find_by_id(params[:user_id])
       unless current_user && (current_user.id == user.id || current_user.user_type == "admin")
@@ -149,7 +141,6 @@ class ResourcesController < ApplicationController
   end
 
   def require_current_user
-
     unless current_user
       flash[:danger] = "You must be logged in!"
       respond_to do |format|

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171216220439) do
+ActiveRecord::Schema.define(version: 20180111000622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,15 @@ ActiveRecord::Schema.define(version: 20171216220439) do
 
   add_index "categories", ["title"], name: "index_categories_on_title", unique: true, using: :btree
 
+  create_table "collection_resources", id: false, force: :cascade do |t|
+    t.integer "collection_id", null: false
+    t.integer "resource_id",   null: false
+  end
+
+  add_index "collection_resources", ["collection_id", "resource_id"], name: "index_collection_resources_on_collection_id_and_resource_id", unique: true, using: :btree
+  add_index "collection_resources", ["collection_id"], name: "index_collection_resources_on_collection_id", using: :btree
+  add_index "collection_resources", ["resource_id"], name: "index_collection_resources_on_resource_id", using: :btree
+
   create_table "collections", force: :cascade do |t|
     t.string   "title"
     t.text     "description",  null: false
@@ -35,15 +44,14 @@ ActiveRecord::Schema.define(version: 20171216220439) do
   end
 
   create_table "resources", force: :cascade do |t|
-    t.string   "title",                         null: false
-    t.string   "url",                           null: false
-    t.string   "description",   default: ""
-    t.string   "media_type",    default: ""
-    t.boolean  "approved",      default: false, null: false
+    t.string   "title",                       null: false
+    t.string   "url",                         null: false
+    t.string   "description", default: ""
+    t.string   "media_type",  default: ""
+    t.boolean  "approved",    default: false, null: false
     t.integer  "owner_id"
-    t.integer  "collection_id"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "sectors", force: :cascade do |t|

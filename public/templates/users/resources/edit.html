@@ -14,12 +14,12 @@
       <div class='col-sm-6 col-sm-offset-3'>
         <form>
           <div class='form-group' ng-class="errorClass('collection')">
-            <label class='control-label' for='collection_id'>Collection</label>
-            <select class='form-control' ng-model='editResource.collection_id' ng-options="collection.id as collection.title for collection in collections">
+            <label class='control-label' for='collection_ids'>Collections</label>
+            <select class='form-control' ng-model='editResource.collection_ids' ng-options="collection.id as collection.title for collection in collections">
             </select>
 
             <span class='help-block' ng-show="errorClass('collection') === 'has-error'">
-              Collection {{ errorMessages('collection') }}
+              Collections {{ errorMessages('collection') }}
             </span>
           </div>
 

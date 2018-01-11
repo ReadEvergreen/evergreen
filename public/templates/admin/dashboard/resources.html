@@ -34,9 +34,9 @@
             <i ng-class="sortIcon('owner_username')"></i>
           </th>
 
-          <th class='pointer' ng-click="toggleSort('collection_name')">
-            Collection
-            <i ng-class="sortIcon('collection_name')"></i>
+          <th class='pointer' ng-click="toggleSort('collection_titles')">
+            Collections
+            <i ng-class="sortIcon('collection_titles')"></i>
           </th>
 
           <th>Remove Resource?</th>
@@ -69,9 +69,7 @@
           </td>
 
           <td>
-            <a ui-sref="collection({collection_id: {{resource.collection_id}}})">
-              {{ resource.collection_name | capitalize:true }}
-            </a>
+            {{ resource.collection_titles | capitalize:true }}
           </td>
           
           <td>

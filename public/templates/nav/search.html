@@ -27,9 +27,9 @@
 
             <th>Description</th>
 
-            <th class='pointer' ng-click="toggleSort('collection_name')">
-              Collection
-              <i ng-class="sortIcon('collection_name')">
+            <th class='pointer' ng-click="toggleSort('collection_titles')">
+              Collections
+              <i ng-class="sortIcon('collection_titles')">
             </i>
             
             <th class='pointer' ng-click="toggleSort('owner_username')">
@@ -55,9 +55,7 @@
             </td>     
             <td>{{ resource.description }}</td>
             <td>
-              <a ui-sref="collection({collection_id: {{resource.collection_id}}})">
-                {{ resource.collection_name }}
-              </a>
+                {{ resource.collection_titles }}
             </td>
             <td>{{ resource.owner_username }}</td>
             <td>{{ resource.created_at | date }}</td>

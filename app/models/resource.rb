@@ -17,7 +17,8 @@
 class Resource < ActiveRecord::Base
 
   belongs_to :owner, :class_name => 'User'
-  belongs_to :collection, required: true
+  has_many :collection_resources
+  has_many :collections, through: :collection_resources
 
   has_many :upvotes, :dependent => :destroy
   has_many :upvoted_users, :through => :upvotes, :source => :user
@@ -28,11 +29,11 @@ class Resource < ActiveRecord::Base
   after_save :add_http
 
   def owner_username
-    self.owner.username
+    self.owner&.username
   end
 
-  def collection_name
-    self.collection.title
+  def collection_titles
+    collections.map(&:title).join(", ")
   end
 
   def upvote_count
@@ -44,7 +45,6 @@ class Resource < ActiveRecord::Base
   end
 
   def self.search(query)
-
     if query
       where('lower(title) LIKE ? OR lower(description) LIKE ?', "%#{query.downcase}%", "%#{query.downcase}%")
     else
