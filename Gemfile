@@ -10,8 +10,9 @@ gem 'figaro'
 gem 'jbuilder', '~> 2.0'
 gem 'jquery-rails'
 gem 'json', '~> 1.8.5' # Required for Ruby 2.4+
+gem 'puma'
+gem 'rack-timeout'
 gem 'sass-rails', '~> 5.0'
-# gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'twitter-bootstrap-rails'
 gem 'uglifier', '>= 1.3.0'
 
