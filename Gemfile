@@ -35,6 +35,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'guard-rspec', require: false
+  gem 'meta_request'
   gem 'pry-rails'
   gem 'web-console', '~> 2.0'
 end
