@@ -21,7 +21,6 @@ FactoryBot.define do
     description   "resource_description"
     url           "http://www.google.com"
     association :owner
-    association :collection
   end
 
 end

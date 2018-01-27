@@ -5,9 +5,13 @@ RSpec.describe SectorsController, type: :controller do
   let!(:sector) { create(:sector) }
   let!(:category) { create(:category, sector: sector) }
   let!(:collection) { create(:collection, category: category) }
-  let!(:resources) { create_list(:resource, 3, owner: user, collection: collection) }
+  let!(:resources) { create_list(:resource, 3, owner: user) }
   let!(:upvote) { create(:upvote, user: user, resource: resources.first) }
   let(:json) { JSON.parse(response.body) }
+
+  before do
+    collection.resources << resources
+  end
 
   describe 'GET#index' do
 
