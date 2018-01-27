@@ -26,8 +26,9 @@ source "https://rails-assets.org" do
 end
 
 group :development, :test do
-  gem 'factory_bot_rails'
   gem 'letter_opener'
+  gem 'pry-rails'
+  gem 'factory_bot_rails'
   gem 'spring'
 end
 
@@ -37,7 +38,6 @@ group :development do
   gem 'binding_of_caller'
   gem 'guard-rspec', require: false
   gem 'meta_request'
-  gem 'pry-rails'
   gem 'web-console', '~> 2.0'
 end
 
@@ -45,7 +45,7 @@ group :production do
   gem "rails_12factor"
 end
 
-group :test do 
+group :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'shoulda-matchers', '~> 3.0'
   gem 'shoulda-callback-matchers', '~> 1.1.1'
