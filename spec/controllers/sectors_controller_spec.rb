@@ -1,5 +1,4 @@
 RSpec.describe SectorsController, type: :controller do
-  
   let!(:user) { create(:user) }
   let!(:admin) { create(:admin) }
   let!(:sector) { create(:sector) }
@@ -14,9 +13,7 @@ RSpec.describe SectorsController, type: :controller do
   end
 
   describe 'GET#index' do
-
     context 'anonymous user' do
-
       before do
         get :index, :format => :json
       end
@@ -28,11 +25,9 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the correct number of sectors' do
         expect(json.count).to eq(1)
       end
-
     end
 
     context 'logged in user' do
-
       before do
         sign_in user
         get :index, :format => :json
@@ -45,26 +40,20 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the correct number of sectors' do
         expect(json.count).to eq(1)
       end
-
     end
-
   end
 
   describe 'GET#overview' do
-
     context 'anonymous user' do
-
       before do
         get :overview, :format => :json
       end
 
       it { should use_before_action(:require_admin) }
       it { should respond_with(401) }
-
     end
 
     context 'non-admin user' do
-
       before do
         sign_in user
         get :overview, :format => :json
@@ -72,11 +61,9 @@ RSpec.describe SectorsController, type: :controller do
 
       it { should use_before_action(:require_admin) }
       it { should respond_with(401) }
-
     end
 
     context 'admin user' do
-
       before do
         sign_in admin
         get :overview, :format => :json
@@ -108,15 +95,11 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the top 3 resources per sector' do
         expect(json[0]).to have_key("top_three")
       end
-
     end
-
   end
 
   describe 'GET#show' do
-
     context 'anonymous user' do
-
       before do
         get :show, :id => sector.id, :format => :json
       end
@@ -138,11 +121,9 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the correct number of collections' do
         expect(json["categories"][0]["collections"].count).to eq(1)
       end
-
     end
 
     context 'logged in user' do
-
       before do
         sign_in user
         get :show, :id => sector.id, :format => :json
@@ -165,19 +146,15 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the correct number of collections' do
         expect(json["categories"][0]["collections"].count).to eq(1)
       end
-
     end
-
   end
 
   describe 'POST#create' do
-
     before do
       sign_in admin
     end
 
     context 'adding the sector as an admin' do
-
       before do
         post :create, :format => :json, :sector => attributes_for(:sector)
       end
@@ -208,30 +185,24 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the resource total' do
         expect(json).to have_key("resource_total")
       end
-
     end
-
   end
 
   describe 'DELETE#destroy' do
-
     before do
       sign_in admin
     end
 
     context 'with a non-existent id' do
-
       before do
         delete :destroy, :format => :json, :id => -1
       end
 
       it { should use_before_action(:require_admin) }
       it { should respond_with(422) }
-
     end
 
     context 'with a valid id' do
-
       before do
         delete :destroy, :format => :json, :id => sector.id
       end
@@ -242,19 +213,15 @@ RSpec.describe SectorsController, type: :controller do
       it 'should remove the sector from the database' do
         expect{ Sector.find(sector.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
-
     end
-
   end
 
   describe 'PATCH#update' do
-
     before do
       sign_in admin
     end
 
     context 'with valid changes' do
-
       let(:updated_title) { 'Updated Title' }
 
       before do
@@ -290,9 +257,6 @@ RSpec.describe SectorsController, type: :controller do
       it 'should return the correct total number of resources for the sector' do
         expect(json["all_totals"][2]).to eq(Sector.find(sector.id).resource_total)
       end
-
     end
-
   end
-
 end
