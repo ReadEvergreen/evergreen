@@ -9,9 +9,7 @@
 #
 
 FactoryBot.define do
-
   factory :sector do
-    title     "sector_title"
+    title { "Sector #{NextIdFor.perform(Sector)}" }
   end
-
 end
