@@ -29,6 +29,14 @@ RSpec.describe Resource, type: :model do
   it { should have_many(:upvotes).dependent(:destroy) }
   it { should have_many(:upvoted_users).through(:upvotes) }
 
+  describe "#title" do
+    it "must be present" do
+      subject.title = nil
+
+      expect(subject).to_not be_valid
+    end
+  end
+
   describe "#url" do
     it "must be present" do
       subject.url = nil
