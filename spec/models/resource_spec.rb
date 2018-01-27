@@ -15,7 +15,6 @@
 #
 
 RSpec.describe Resource, type: :model do
-
   subject { Resource.new(title: title, url: url) }
 
   let(:title) { "Test Resource" }
