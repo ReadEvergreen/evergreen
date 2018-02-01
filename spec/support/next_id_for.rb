@@ -1,5 +1,5 @@
 class NextIdFor
-  attr_accessor :klass
+  attr_reader :klass
 
   def self.perform(*args)
     self.new(*args).perform
@@ -13,7 +13,7 @@ class NextIdFor
     if constantized_klass.last.nil?
       1
     else
-      constantized_klass.last.id
+      constantized_klass.last.id + 1
     end
   end
 

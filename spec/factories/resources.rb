@@ -15,12 +15,10 @@
 #
 
 FactoryBot.define do
-
   factory :resource, aliases: [:synthesis] do
-    title         "resource_title"
+    title         { "Resource #{NextIdFor.perform(Resource)}" }
     description   "resource_description"
     url           "http://www.google.com"
     association :owner
   end
-
 end

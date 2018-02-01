@@ -10,10 +10,8 @@
 #
 
 FactoryBot.define do
-
   factory :category do
-    title         "category_title"
+    title { "Category #{NextIdFor.perform(Category)}" }
     association :sector
   end
-
 end

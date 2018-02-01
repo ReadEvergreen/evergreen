@@ -9,11 +9,19 @@
 #
 
 RSpec.describe Sector, type: :model do
-  subject(:sector) { Sector.create(title: "business") }
+  subject { create(:sector) }
 
-  it "has a unique title" do
-    duplicate_sector = sector.dup
+  describe "#title" do
+    it "must be present" do
+      subject.title = nil
 
-    expect(duplicate_sector).to be_invalid
+      expect(subject).to be_invalid
+    end
+
+    it "must be unique" do
+      duplicate_sector = subject.dup
+
+      expect(duplicate_sector).to be_invalid
+    end
   end
 end

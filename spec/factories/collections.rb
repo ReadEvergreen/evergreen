@@ -10,11 +10,12 @@
 #  updated_at   :datetime         not null
 #  synthesis_id :integer
 #
+require_relative '../support/next_id_for'
 
 FactoryBot.define do
   factory :collection do
-    title           "collection_title"
-    description     "collection_description"
+    title { "Collection #{NextIdFor.perform(Collection)}" }
+    description "collection_description"
     association :category
   end
 end

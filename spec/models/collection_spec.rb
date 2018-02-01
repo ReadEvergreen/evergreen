@@ -12,8 +12,19 @@
 #
 
 RSpec.describe Collection, type: :model do
+  subject { create(:collection) }
 
-  it { should belong_to(:category) }
-  it { should belong_to(:synthesis).with_foreign_key(:synthesis_id) }
+  describe "#title" do
+    it "must be present" do
+      subject.title = nil
 
+      expect(subject).to be_invalid
+    end
+
+    it "must be unique" do
+      duplicate_collection = subject.dup
+
+      expect(duplicate_collection).to be_invalid
+    end
+  end
 end

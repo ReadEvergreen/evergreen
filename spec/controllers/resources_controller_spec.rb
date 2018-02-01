@@ -7,27 +7,26 @@ RSpec.describe ResourcesController, type: :controller do
   let!(:sector) { create(:sector) }
   let!(:category) { create(:category, sector: sector) }
   let!(:collection) { create(:collection, category: category) }
-  let!(:resources) { create_list(:resource, 3, owner: user, collection: collection) }
+  let!(:resources) { create_list(:resource, 3, owner: user) }
   let!(:upvote) { create(:upvote, user: user, resource: resources.first) }
   let(:json) { JSON.parse(response.body) }
 
+  before do
+    collection.resources << resources
+  end
+
   describe 'GET#index' do
-
     context 'as an anonymous user' do
-
       context 'trying to access user index of resources' do
-
         before do
           get :index, :format => :json, :user_id => user.id
         end
 
         it { should use_before_action(:require_owner) }
         it { should respond_with(:unauthorized) }
-
       end
 
       context 'trying to access collection index of resources' do
-
         before do
           get :index, :format => :json, :collection_id => collection.id
         end
@@ -43,8 +42,8 @@ RSpec.describe ResourcesController, type: :controller do
           expect(json[0]["owner"]["id"]).to eq(user.id)
         end
 
-        it 'should return the collection of the resource' do
-          expect(json[0]["collection"]["id"]).to eq(collection.id)
+        it 'should return the collections of the resource' do
+          expect(json[0]["collections"][0]["id"]).to eq(collection.id)
         end
 
         it 'should return the total upvotes of the resource' do
@@ -54,30 +53,24 @@ RSpec.describe ResourcesController, type: :controller do
         it 'should return the ids of the users who have upvoted the resource' do
           expect(json[0]).to have_key("upvote_ids")
         end
-
       end
-
     end
 
     context 'as a reader' do
-
       before do
         sign_in reader
       end
 
       context "trying to access another user's index of resources" do
-
         before do
           get :index, :format => :json, :user_id => user.id
         end
 
         it { should use_before_action(:require_owner) }
         it { should respond_with(:unauthorized) }
-
       end
 
       context 'trying to access collection index of resources' do
-
         before do
           get :index, :format => :json, :collection_id => collection.id
         end
@@ -94,7 +87,7 @@ RSpec.describe ResourcesController, type: :controller do
         end
 
         it 'should return the collection of the resource' do
-          expect(json[0]["collection"]["id"]).to eq(collection.id)
+          expect(json[0]["collections"][0]["id"]).to eq(collection.id)
         end
 
         it 'should return the total upvotes of the resource' do
@@ -104,30 +97,24 @@ RSpec.describe ResourcesController, type: :controller do
         it 'should return the ids of the users who have upvoted the resource' do
           expect(json[0]).to have_key("upvote_ids")
         end
-
       end
-
     end
 
     context 'as a curator' do
-
       before do
         sign_in user
       end
 
       context "trying to access another user's index of resources" do
-
         before do
           get :index, :format => :json, :user_id => curator.id
         end
 
         it { should use_before_action(:require_owner) }
         it { should respond_with(:unauthorized) }
-
       end
 
       context 'trying to access his/her index of resources' do
-
         before do
           get :index, :format => :json, :user_id => user.id
         end
@@ -148,23 +135,20 @@ RSpec.describe ResourcesController, type: :controller do
         end
 
         it 'should return the collection of the resource' do
-          expect(json[0]).to have_key("collection_name")
+          expect(json[0]).to have_key("collection_titles")
         end
 
         it 'should return the upvotes of the resource' do
           expect(json[0]).to have_key("upvote_count")
         end
-
       end
 
       context 'as an admin' do
-
         before do
           sign_in admin
         end
 
         context "trying to access another user's index of resources" do
-
           before do
             get :index, :format => :json, :user_id => user.id
           end
@@ -185,36 +169,28 @@ RSpec.describe ResourcesController, type: :controller do
           end
 
           it 'should return the collection of the resource' do
-            expect(json[0]).to have_key("collection_name")
+            expect(json[0]).to have_key("collection_titles")
           end
 
           it 'should return the upvotes of the resource' do
             expect(json[0]).to have_key("upvote_count")
           end
-
         end
-
       end
-
     end
-
   end
 
   describe 'GET#show' do
-
     context 'as an anonymous user' do
-
       before do
         get :show, :format => :json, :user_id => user.id, :id => resources[0].id
       end
 
       it { should use_before_action(:require_owner) }
       it { should respond_with(:unauthorized) }
-
     end
 
     context 'as a reader' do
-
       before do
         sign_in reader
         get :show, :format => :json, :user_id => user.id, :id => resources[0].id
@@ -222,13 +198,10 @@ RSpec.describe ResourcesController, type: :controller do
 
       it { should use_before_action(:require_owner) }
       it { should respond_with(:unauthorized) }
-
     end
 
     context 'as a curator' do
-
       context "trying to show another user's resource" do
-
         before do
           sign_in curator
           get :show, :format => :json, :user_id => user.id, :id => resources[0].id
@@ -236,11 +209,9 @@ RSpec.describe ResourcesController, type: :controller do
 
         it { should use_before_action(:require_owner) }
         it { should respond_with(:unauthorized) }
-
       end
 
       context "trying to show the owner's resource" do
-
         before do
           sign_in user
           get :show, :format => :json, :user_id => user.id, :id => resources[0].id
@@ -256,15 +227,11 @@ RSpec.describe ResourcesController, type: :controller do
         it 'should return the owner id' do
           expect(json).to have_key("owner_id")
         end
-
       end
-
     end
 
     context 'as an admin' do
-
       context "trying to show another user's resource" do
-
         before do
           sign_in admin
           get :show, :format => :json, :user_id => user.id, :id => resources[0].id
@@ -280,20 +247,15 @@ RSpec.describe ResourcesController, type: :controller do
         it 'should return the owner id' do
           expect(json).to have_key("owner_id")
         end
-
       end
-
     end
-
   end
 
   describe 'POST#create' do
-
     let(:owner_id) { user.id }
     let(:collection_id) { collection.id }
 
     context 'adding a collection as a curator/admin' do
-
       before do
         sign_in user
         post :create, :format => :json, :resource => attributes_for(:resource, :owner_id => owner_id, :collection_id => collection_id)
@@ -307,15 +269,15 @@ RSpec.describe ResourcesController, type: :controller do
       end
 
       it 'should set the title' do
-        expect(Resource.find(resources[0].id).title).to eq("resource_title")
+        expect(Resource.find(resources[0].id).title).to be_present
       end
 
       it 'should set the description' do
-        expect(Resource.find(resources[0].id).description).to eq("resource_description")
+        expect(Resource.find(resources[0].id).description).to be_present
       end
 
       it 'should be under a collection' do
-        expect(Resource.find(resources[0].id).collection).to eq(collection)
+        expect(Resource.find(resources[0].id).collections).to eq([collection])
       end
 
       it 'should have the correct owner' do
@@ -325,17 +287,12 @@ RSpec.describe ResourcesController, type: :controller do
       it 'should return the resource' do
         expect(json).to be_a(Hash)
       end
-
     end
-
   end
 
   describe 'DELETE#destroy' do
-
     context 'as a curator' do
-
       context "trying to delete another user's resource" do
-
         before do
           sign_in curator
           delete :destroy, :format => :json, :user_id => user.id, :id => resources[0].id
@@ -344,11 +301,9 @@ RSpec.describe ResourcesController, type: :controller do
         it { should use_before_action(:require_owner) }
         it { should use_before_action(:require_curator) }
         it { should respond_with(:unauthorized) }
-
       end
 
       context "trying to delete his/her resource" do
-
         before do
           sign_in user
           delete :destroy, :format => :json, :user_id => user.id, :id => resources[0].id
@@ -357,19 +312,15 @@ RSpec.describe ResourcesController, type: :controller do
         it { should use_before_action(:require_owner) }
         it { should use_before_action(:require_curator) }
         it { should respond_with(204) }
-
       end
-
     end
 
     context 'as an admin' do
-
       before do
         sign_in admin
       end
 
       context 'with a non-existent id' do
-
         before do
           delete :destroy, :format => :json, :user_id => admin.id, :id => -1
         end
@@ -377,11 +328,9 @@ RSpec.describe ResourcesController, type: :controller do
         it { should use_before_action(:require_owner) }
         it { should use_before_action(:require_curator) }
         it { should respond_with(422) }
-
       end
 
       context 'with a valid id' do
-
         before do
           delete :destroy, :format => :json, :user_id => admin.id, :id => resources[0].id
         end
@@ -393,67 +342,55 @@ RSpec.describe ResourcesController, type: :controller do
         it 'should remove the resource from the database' do
           expect{ Resource.find(resources[0].id) }.to raise_error(ActiveRecord::RecordNotFound)
         end
-
       end
-
     end
-
   end
 
   describe 'PATCH#update' do
-
     let(:updated_title) { 'Updated Title' }
     let(:updated_description) { 'Updated Description' }
-    let(:collection_id) { collection.id }
+    let(:collection_id) { create(:collection).id }
 
     context 'as a curator' do
-
       context "trying to update another user's resource" do
-
         before do
           sign_in curator
           patch :update, :format => :json, :user_id => user.id, :id => resources[0].id, :resource => attributes_for(:resource, 
               :title => updated_title,
               :description => updated_description,
-              :collection_id => collection_id)
+              :collection_ids => [collection_id])
         end
 
         it { should use_before_action(:require_owner) }
         it { should use_before_action(:require_curator) }
         it { should respond_with(:unauthorized) }
-
       end
 
       context "trying to update his/her resource" do
-
         before do
           sign_in user
           patch :update, :format => :json, :user_id => user.id, :id => resources[0].id, :resource => attributes_for(:resource, 
               :title => updated_title,
               :description => updated_description,
-              :collection_id => collection_id)
+              :collection_ids => [collection_id])
         end
 
         it { should use_before_action(:require_owner) }
         it { should use_before_action(:require_curator) }
         it { should respond_with(200) }
-
       end
-
     end
 
     context 'as an admin' do
-
       before do
         sign_in admin
         patch :update, :format => :json, :user_id => user.id, :id => resources[0].id, :resource => attributes_for(:resource, 
             :title => updated_title,
             :description => updated_description,
-            :collection_id => collection_id)
+            :collection_ids => [collection_id])
       end  
 
       context 'with valid params' do
-
         it { should use_before_action(:require_owner) }
         it { should use_before_action(:require_curator) }
         it { should respond_with(200) }
@@ -467,30 +404,23 @@ RSpec.describe ResourcesController, type: :controller do
         end
 
         it 'should change the collection the resource is under in the database' do
-          expect(Resource.find(resources[0].id).collection).to eq(collection)
+          expect(Resource.find(resources[0].id).collections).to eq([collection])
         end
-
       end
-
     end    
-
   end
 
   describe 'POST#upvote' do
-
     context 'as an anonymous user' do
-
       before do
         post :upvote, :format => :json, :id => resources[0].id
       end
 
       it { should use_before_action(:require_current_user) }
       it { should respond_with(:unauthorized) }
-
     end
 
     context 'as a reader' do
-
       before do
         sign_in reader
         post :upvote, :format => :json, :id => resources[0].id
@@ -508,7 +438,7 @@ RSpec.describe ResourcesController, type: :controller do
       end
 
       it 'should return the collection of the resource' do
-        expect(json["collection"]["id"]).to eq(collection.id)
+        expect(json["collections"][0]["id"]).to eq(collection.id)
       end
 
       it 'should return the upvotes of the resource' do
@@ -518,11 +448,9 @@ RSpec.describe ResourcesController, type: :controller do
       it 'should return the ids of the users who upvoted the resource' do
         expect(json).to have_key("upvote_ids")
       end
-
     end
 
     context 'as a curator' do
-
       before do
         sign_in curator
         post :upvote, :format => :json, :id => resources[0].id
@@ -540,7 +468,7 @@ RSpec.describe ResourcesController, type: :controller do
       end
 
       it 'should return the collection of the resource' do
-        expect(json["collection"]["id"]).to eq(collection.id)
+        expect(json["collections"][0]["id"]).to eq(collection.id)
       end
 
       it 'should return the upvotes of the resource' do
@@ -550,11 +478,9 @@ RSpec.describe ResourcesController, type: :controller do
       it 'should return the ids of the users who upvoted the resource' do
         expect(json).to have_key("upvote_ids")
       end
-
     end
 
     context 'as a admin' do
-
       before do
         sign_in admin
         post :upvote, :format => :json, :id => resources[0].id
@@ -572,7 +498,7 @@ RSpec.describe ResourcesController, type: :controller do
       end
 
       it 'should return the collection of the resource' do
-        expect(json["collection"]["id"]).to eq(collection.id)
+        expect(json["collections"][0]["id"]).to eq(collection.id)
       end
 
       it 'should return the upvotes of the resource' do
@@ -582,9 +508,6 @@ RSpec.describe ResourcesController, type: :controller do
       it 'should return the ids of the users who upvoted the resource' do
         expect(json).to have_key("upvote_ids")
       end
-
     end
-
   end
-
 end

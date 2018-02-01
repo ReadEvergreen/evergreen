@@ -32,7 +32,7 @@ RSpec.describe Resource, type: :model do
     it "must be present" do
       subject.title = nil
 
-      expect(subject).to_not be_valid
+      expect(subject).to be_invalid
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe Resource, type: :model do
     it "must be present" do
       subject.url = nil
 
-      expect(subject).to_not be_valid
+      expect(subject).to be_invalid
     end
   end
 end
