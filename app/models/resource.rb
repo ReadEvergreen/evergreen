@@ -2,15 +2,14 @@
 #
 # Table name: resources
 #
-#  id          :integer          not null, primary key
-#  title       :string           not null
-#  url         :string           not null
-#  description :string           default("")
-#  media_type  :string           default("")
-#  approved    :boolean          default(FALSE), not null
-#  owner_id    :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id         :integer          not null, primary key
+#  title      :string           not null
+#  url        :string           not null
+#  media_type :string           default("")
+#  approved   :boolean          default(FALSE), not null
+#  owner_id   :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 
 class Resource < ActiveRecord::Base
@@ -25,6 +24,14 @@ class Resource < ActiveRecord::Base
   validates :title, presence: true
   validates :url, presence: true
   # validates :url, :format => { :with => /\A(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?\z/ }
+
+  def description
+    collection_resources.first&.description
+  end
+
+  def description=(description)
+    collection_resources.update_all(description: description)
+  end
 
   def owner_username
     self.owner&.username
