@@ -27,8 +27,6 @@ class Resource < ActiveRecord::Base
   validates :url, presence: true
   # validates :url, :format => { :with => /\A(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?\z/ }
 
-  after_save :add_http
-
   def owner_username
     self.owner&.username
   end
@@ -51,14 +49,5 @@ class Resource < ActiveRecord::Base
     else
       where("")
     end
-
   end
-
-  def add_http
-    if /\Ahttp/.match(self.url).nil?
-      url = 'http://' + self.url
-      self.update_attributes(:url => url)
-    end
-  end
-  
 end
