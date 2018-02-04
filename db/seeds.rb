@@ -95,25 +95,27 @@ SiteInfo.find_or_create_by!(:about => '<p>Evergreen is a Bi-weekly collection of
 
 sector = Sector.find_or_create_by!(title: "Business")
 
-CSV.foreach(Rails.root.join("db", "data", "resources.csv"), headers: true) do |resource|
-  p resource
-  category = Category.find_or_create_by!(title: resource["Category"], sector: sector)
-  collection =
-    Collection.find_or_create_by!(
-      title: resource["Collection"],
-      description: "Description here.",
-      category: category
-    )
+CSV.foreach(Rails.root.join("db", "data", "resources.csv"), headers: true) do |row|
+  category = Category.find_or_create_by!(title: row["Category"], sector: sector)
 
-  Resource.
-    find_or_initialize_by(url: resource["Link"]).
-    update_attributes!(
-      media_type: resource["Media Type"],
-      description: resource["Description"],
-      title: resource["Title"],
-      collection: collection,
-      approved: true,
-    )
+  collection =
+    Collection.
+      find_or_create_by!(
+        title: row["Collection"],
+        description: "Description here.",
+        category: category
+      )
+
+  resource = Resource.find_or_initialize_by(url: row["Link"])
+
+  resource.update_attributes!(
+    media_type: row["Media Type"],
+    description: row["Description"],
+    title: row["Title"],
+    approved: true
+  )
+
+  resource.collections << collection
 end
 
 # input_collections = ['Advertising',
