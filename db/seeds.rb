@@ -91,7 +91,7 @@ SiteInfo.find_or_create_by!(:about => '<p>Evergreen is a Bi-weekly collection of
 #   Sector.create(:title => Faker::Book.genre)
 # end
 
-# puts 'Random Sectors Created'
+puts 'Importing resources...'
 
 sector = Sector.find_or_create_by!(title: "Business")
 
@@ -110,12 +110,15 @@ CSV.foreach(Rails.root.join("db", "data", "resources.csv"), headers: true) do |r
 
   resource.update_attributes!(
     media_type: row["Media Type"],
-    description: row["Description"],
     title: row["Title"],
     approved: true
   )
 
-  resource.collections << collection
+  CollectionResource.create!(
+    resource: resource,
+    collection: collection,
+    description: row["Description"]
+  )
 end
 
 # input_collections = ['Advertising',
