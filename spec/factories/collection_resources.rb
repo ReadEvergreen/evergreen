@@ -2,10 +2,11 @@
 #
 # Table name: collection_resources
 #
+#  id            :integer          not null, primary key
 #  collection_id :integer          not null
 #  resource_id   :integer          not null
-#  id            :integer          not null, primary key
 #  description   :string
+#  synthesis     :boolean          default(FALSE), not null
 #
 
 FactoryBot.define do

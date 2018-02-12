@@ -2,14 +2,14 @@
 #
 # Table name: collections
 #
-#  id           :integer          not null, primary key
-#  title        :string
-#  description  :text             not null
-#  category_id  :integer
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  synthesis_id :integer
+#  id          :integer          not null, primary key
+#  title       :string
+#  description :text             not null
+#  category_id :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
+
 require_relative '../support/next_id_for'
 
 FactoryBot.define do

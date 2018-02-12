@@ -2,13 +2,12 @@
 #
 # Table name: collections
 #
-#  id           :integer          not null, primary key
-#  title        :string
-#  description  :text             not null
-#  category_id  :integer
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  synthesis_id :integer
+#  id          :integer          not null, primary key
+#  title       :string
+#  description :text             not null
+#  category_id :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 
 class Collection < ActiveRecord::Base
@@ -16,7 +15,8 @@ class Collection < ActiveRecord::Base
   has_many :collection_resources
   has_many :resources, through: :collection_resources
   has_many :upvotes, :through => :resources
-  belongs_to :synthesis, class_name: 'Resource', :foreign_key => :synthesis_id
+  has_one :synthesis_collection_resource, -> { synthesis }, class_name: 'CollectionResource'
+  has_one :synthesis, through: :synthesis_collection_resource, source: :resource
 
   validates :title, presence: true, uniqueness: true
   validates :description, :length => { :in => 1..500 }
@@ -27,6 +27,10 @@ class Collection < ActiveRecord::Base
 
   def resource_names
     self.resources.map { |resource| [resource.title, resource.id] }
+  end
+
+  def synthesis_id
+    synthesis&.id
   end
 
   def approved_IDs

@@ -117,7 +117,8 @@ CSV.foreach(Rails.root.join("db", "data", "resources.csv"), headers: true) do |r
   CollectionResource.create!(
     resource: resource,
     collection: collection,
-    description: row["Description"]
+    description: row["Description"],
+    synthesis: row["Synthesis"] == "TRUE",
   )
 end
 

@@ -16,7 +16,7 @@ class CollectionsController < ApplicationController
     @collection = Collection.find(params[:id])
 
     respond_to do |format|
-      format.json { render json: @collection }
+      format.json { render json: @collection, methods: %i(synthesis_id) }
     end
   end
 
