@@ -1,10 +1,10 @@
 evergreen.controller('showCollectionCtrl',
-  ['$scope', 'Restangular', 'resources', 'flashService', 'resourceService', 'userService',
-  function($scope, Restangular, resources, flashService, resourceService, userService) {
+  ['$scope', 'Restangular', 'resources', 'collection', 'flashService', 'resourceService', 'userService',
+  function($scope, Restangular, resources, collection, flashService, resourceService, userService) {
 
     $scope.init = function() {
-      $scope.collectionName = resources[0].collection.title;
-      $scope.collectionDesc = resources[0].collection.description;
+      $scope.collectionName = collection.title;
+      $scope.collectionDesc = collection.description;
       $scope.searchText = "";
       $scope.synthesis = $scope.getSynthesis();
       $scope.getUser();
@@ -42,7 +42,7 @@ evergreen.controller('showCollectionCtrl',
     };
 
     $scope.getSynthesis = function() {
-      var id = resources[0].collection.synthesis_id;
+      var id = collection.synthesis_id;
       return resources.filter( function(resource) {
         return resource.id == id;
       })[0];

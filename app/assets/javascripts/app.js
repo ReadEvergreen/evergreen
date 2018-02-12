@@ -101,6 +101,9 @@ var evergreen = angular.module('evergreen', ['ui.router', 'restangular', 'templa
         resolve: {
           resources: ['Restangular', '$stateParams', function(Restangular, $stateParams) {
             return Restangular.one("collections", $stateParams["collection_id"]).all("resources").getList();
+          }],
+          collection: ['Restangular', '$stateParams', function(Restangular, $stateParams) {
+            return Restangular.one("collections", $stateParams["collection_id"]).get();
           }]
         }
       })

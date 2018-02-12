@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       end
     end
     resources :categories, :only => [:index, :create, :update, :destroy]
-    resources :collections, :only => [:index, :create, :update, :destroy] do
+    resources :collections, only: %i(index create update destroy show) do
       resources :resources, :only => [:index]
       collection do
         get 'homepage'

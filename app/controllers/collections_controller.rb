@@ -3,7 +3,6 @@ class CollectionsController < ApplicationController
   before_action :require_admin, :only => [:create, :update, :destroy]
 
   def index
-
     @collections = Collection.all
     respond_to do |format|
       format.json { render json: @collections.to_json(
@@ -11,21 +10,25 @@ class CollectionsController < ApplicationController
                      :resource_names,
                      :approved_IDs]), :status => 200 }
     end
+  end
 
+  def show
+    @collection = Collection.find(params[:id])
+
+    respond_to do |format|
+      format.json { render json: @collection }
+    end
   end
 
   def homepage
-
     @collections = Collection.most_recently_updated
     respond_to do |format|
       format.json { render json: @collections.to_json(
         :methods => [:top_three]), :status => 200 }
     end
-
   end
 
   def create
-
     @collection = Collection.new(collection_params)
 
     if @collection.save
@@ -39,11 +42,9 @@ class CollectionsController < ApplicationController
         format.json { render :nothing => :true, :status => 422 }
       end
     end
-
   end
 
   def update
-
     @collection = Collection.find_by_id(params[:id])
 
     if @collection.update(collection_params)
@@ -58,11 +59,9 @@ class CollectionsController < ApplicationController
         format.json { render :nothing => :true, :status => 422 }
       end
     end
-
   end
 
   def destroy
-
     @collection = Collection.find_by_id(params[:id])
 
     if @collection && @collection.destroy
@@ -74,7 +73,6 @@ class CollectionsController < ApplicationController
         format.json { render :nothing => :true, :status => 422 }
       end
     end
-
   end
 
   private
@@ -82,5 +80,4 @@ class CollectionsController < ApplicationController
   def collection_params
     params.require(:collection).permit(:title, :description, :category_id, :synthesis_id)
   end
-
 end
