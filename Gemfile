@@ -5,6 +5,7 @@ gem 'rails', '4.2.10'
 gem 'pg'
 
 gem 'devise', '3.5.6'
+gem 'haml-rails'
 gem 'faker'
 gem 'figaro'
 gem 'jbuilder', '~> 2.0'
