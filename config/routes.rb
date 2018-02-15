@@ -23,7 +23,7 @@ Rails.application.routes.draw do
         get 'homepage'
       end
     end
-    resources :resources, :only => [:index, :create, :show, :update] do
+    resources :resources, except: %i(new edit destroy) do
       collection do
         get 'search'
       end
@@ -31,4 +31,5 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :resources, only: :new
 end

@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
 
-  before_action :require_curator, :only => [:create, :update, :destroy]
+  before_action :require_curator, only: %i(new create update destroy)
   before_action :require_owner, :only => [:index, :show, :update, :destroy]
   before_action :require_current_user, :only => [:upvote]
 
@@ -34,7 +34,6 @@ class ResourcesController < ApplicationController
                        :upvote_count]), :status => 200 }
       end
     end
-
   end
 
   def show
@@ -42,7 +41,6 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       format.json { render json: @resource.to_json, :status => 200 }
     end
-
   end
 
   def search
@@ -53,7 +51,10 @@ class ResourcesController < ApplicationController
                      :collection_titles,
                      :upvote_count]), :status => 200 }
     end
+  end
 
+  def new
+    render :new, locals: { resource: resource }
   end
 
   def create
@@ -68,7 +69,6 @@ class ResourcesController < ApplicationController
         format.json { render json: @resource.errors.to_json, :status => 422 }
       end
     end
-
   end
 
   def upvote
@@ -81,13 +81,11 @@ class ResourcesController < ApplicationController
           :methods => [:upvote_count,
                        :upvote_ids]), :status => 200 }
       end
-
     else
       respond_to do |format|
         format.json { render :nothing => :true, :status => 422 }
       end
     end
-
   end
 
   def update
@@ -102,7 +100,6 @@ class ResourcesController < ApplicationController
         format.json { render json: @resource.errors.to_json, :status => 422 }
       end
     end
-
   end
 
   def destroy
@@ -117,10 +114,13 @@ class ResourcesController < ApplicationController
         format.json { render :nothing => :true, :status => 422 }
       end
     end
-
   end
 
   private
+
+  def resource
+    @resource ||= Resource.new
+  end
 
   def resource_params
     params.require(:resource).permit(:title, :description, :url, :owner_id, :collection_ids, :media_type, :approved)
@@ -137,7 +137,6 @@ class ResourcesController < ApplicationController
         end
       end
     end
-
   end
 
   def require_current_user
@@ -147,7 +146,5 @@ class ResourcesController < ApplicationController
         format.json { render :nothing => :true, :status => 401 }
       end
     end
-
   end
-  
 end
