@@ -4,6 +4,8 @@ class ResourcesController < ApplicationController
   before_action :require_owner, :only => [:index, :show, :update, :destroy]
   before_action :require_current_user, :only => [:upvote]
 
+  layout 'application_rails', only: :new
+
   def index
     # resource index for specific user
     if params[:user_id]
