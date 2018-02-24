@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def sectors
+    @sectors ||= Sector.all
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) << :username
   end

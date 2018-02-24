@@ -1,0 +1,6 @@
+%ul.nav.navbar-nav.sectors-navigation
+  - sectors.each do |sector|
+    %li
+      = link_to sector.title, sector, class: 'active'
+
+    - # Flash messages go here... ?

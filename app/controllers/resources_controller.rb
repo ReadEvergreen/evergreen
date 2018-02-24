@@ -56,7 +56,7 @@ class ResourcesController < ApplicationController
   end
 
   def new
-    render :new, locals: { resource: resource }
+    render :new, locals: { resource: resource, sectors: sectors }
   end
 
   def create
