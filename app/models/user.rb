@@ -33,6 +33,18 @@ class User < ActiveRecord::Base
   has_many :upvotes, :dependent => :destroy
   has_many :upvoted_resources, :through => :upvotes, :source => :resource
 
+  USER_TYPES = %w(admin curator reader)
+
+  USER_TYPES.each do |type|
+    # Defines predicate methods for each user type
+    # Examples: #admin?, #curator?, #reader?
+    define_method("#{type}?") { user_type == type }
+
+    # Defines scopes for each user type
+    # Examples: .admin, .curator, .reader
+    scope :"#{type}", -> { where(user_type: type) }
+  end
+
   def resource_total
     self.resources.count
   end

@@ -1,0 +1,28 @@
+.user-actions-menu
+  - if !user_signed_in?
+    %ul.nav.navbar-nav.navbar-right
+      %li.dropdown
+        = link_to new_user_session_path do
+          'Log In'
+          %b.caret
+  - else
+    %ul.nav.navbar-nav.navbar-right
+      %li.dropdown
+        %a.dropdown-toggle.pointer{ data: { toggle: 'dropdown' } }
+          Welcome, #{current_user.username}
+          %b.caret
+
+        %ul.dropdown-menu
+          - if current_user.admin?
+            %li
+              = link_to 'Admin Dashboard', '/admin/dashboard/overview'
+          - if current_user.curator? || current_user.admin?
+            %li
+              = link_to 'Add Resource', new_resource_path
+          - if current_user.curator? || current_user.admin?
+            %li
+              = link_to 'View Your Resources', "/user/#{current_user.id}/resources"
+          %li
+            = link_to 'Edit Information', '/register/edit'
+          %li
+            = link_to 'Log Out', '#'
