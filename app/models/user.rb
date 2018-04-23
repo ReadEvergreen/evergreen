@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   # Send our users an email after signup
-  after_create :send_signup_mail
+  after_commit :send_signup_mail, on: :create
 
   has_many :resources, :foreign_key => 'owner_id', :dependent => :destroy
 
